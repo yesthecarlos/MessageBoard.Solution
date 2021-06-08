@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MessageBoard.Migrations
 {
     [DbContext(typeof(MessageBoardContext))]
-    [Migration("20210608211543_UpdateContext")]
-    partial class UpdateContext
+    [Migration("20210608224356_UpdateSchema")]
+    partial class UpdateSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,7 +30,12 @@ namespace MessageBoard.Migrations
                     b.Property<string>("GroupTag")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("GroupId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Groups");
                 });
@@ -56,37 +61,12 @@ namespace MessageBoard.Migrations
 
                     b.HasKey("MessageId");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("GroupId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Messages");
-
-                    b.HasData(
-                        new
-                        {
-                            MessageId = 1,
-                            GroupId = 0,
-                            MessageDate = "06-08-2021",
-                            MessageText = "Testing: Did this work?",
-                            UserId = 0
-                        },
-                        new
-                        {
-                            MessageId = 2,
-                            GroupId = 0,
-                            MessageDate = "06-04-2021",
-                            MessageText = "Again Testing: What will happen?",
-                            UserId = 0
-                        },
-                        new
-                        {
-                            MessageId = 3,
-                            GroupId = 0,
-                            MessageDate = "06-07-2021",
-                            MessageText = "Hopefully?",
-                            UserId = 0
-                        });
                 });
 
             modelBuilder.Entity("MessageBoard.Models.User", b =>
@@ -104,11 +84,22 @@ namespace MessageBoard.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("MessageBoard.Models.Group", b =>
+                {
+                    b.HasOne("MessageBoard.Models.User", "user")
+                        .WithMany("Groups")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
+                });
+
             modelBuilder.Entity("MessageBoard.Models.Message", b =>
                 {
                     b.HasOne("MessageBoard.Models.Group", "Group")
-                        .WithMany("Messages")
-                        .HasForeignKey("GroupId")
+                        .WithOne("message")
+                        .HasForeignKey("MessageBoard.Models.Message", "GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -125,11 +116,13 @@ namespace MessageBoard.Migrations
 
             modelBuilder.Entity("MessageBoard.Models.Group", b =>
                 {
-                    b.Navigation("Messages");
+                    b.Navigation("message");
                 });
 
             modelBuilder.Entity("MessageBoard.Models.User", b =>
                 {
+                    b.Navigation("Groups");
+
                     b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618

@@ -16,5 +16,6 @@ namespace MessageBoard.Models
         [Required]
         public string UserName { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
+        public virtual ICollection<Group> Groups {get; set;}
     }
 }

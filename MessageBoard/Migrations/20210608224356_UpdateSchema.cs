@@ -3,26 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MessageBoard.Migrations
 {
-    public partial class Initial : Migration
+    public partial class UpdateSchema : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Groups",
-                columns: table => new
-                {
-                    GroupId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    GroupName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    GroupTag = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Groups", x => x.GroupId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "User",
+                name: "Users",
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
@@ -31,7 +17,28 @@ namespace MessageBoard.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.UserId);
+                    table.PrimaryKey("PK_Users", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Groups",
+                columns: table => new
+                {
+                    GroupId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    GroupName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    GroupTag = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Groups", x => x.GroupId);
+                    table.ForeignKey(
+                        name: "FK_Groups_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,32 +62,23 @@ namespace MessageBoard.Migrations
                         principalColumn: "GroupId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Messages_User_UserId",
+                        name: "FK_Messages_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Messages",
-                columns: new[] { "MessageId", "GroupId", "MessageDate", "MessageText", "UserId" },
-                values: new object[] { 1, 1, "06-08-2021", "Testing: Did this work?", 1 });
-
-            migrationBuilder.InsertData(
-                table: "Messages",
-                columns: new[] { "MessageId", "GroupId", "MessageDate", "MessageText", "UserId" },
-                values: new object[] { 2, 1, "06-04-2021", "Again Testing: What will happen?", 2 });
-
-            migrationBuilder.InsertData(
-                table: "Messages",
-                columns: new[] { "MessageId", "GroupId", "MessageDate", "MessageText", "UserId" },
-                values: new object[] { 3, 3, "06-07-2021", "Hopefully?", 3 });
+            migrationBuilder.CreateIndex(
+                name: "IX_Groups_UserId",
+                table: "Groups",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_GroupId",
                 table: "Messages",
-                column: "GroupId");
+                column: "GroupId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_UserId",
@@ -97,7 +95,7 @@ namespace MessageBoard.Migrations
                 name: "Groups");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
         }
     }
 }
