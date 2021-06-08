@@ -7,13 +7,14 @@ namespace MessageBoard.Models
         public int MessageId { get; set; }
         [Required]
         [Display(Name="Author")]
-        public string MessageAuthor { get; set; }
         public string MessageText { get; set; }
-        public datetime MessageDate { get; set; }
+        public string MessageDate { get; set; }
         public int GroupId { get; set; }
         public int UserId { get; set; }
+        public virtual Group Group { get; set; }
+        public virtual User user { get; set; }
 
-            public virtual ApplicationUser User { get; set; }
+        // public virtual ApplicationUser User { get; set; }
     }
 }
 
