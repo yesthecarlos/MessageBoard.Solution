@@ -1,3 +1,8 @@
+using System.Collections.Generic;
+using System;
+using System.ComponentModel.DataAnnotations;
+
+
 namespace MessageBoard.Models
 {
     public class Group
@@ -9,7 +14,9 @@ namespace MessageBoard.Models
         public int GroupId { get; set; }
         public string GroupName { get; set; }
         public string GroupTag { get; set; }
+
+        public virtual ICollection<Message> Messages { get; set; }
     }
 }
 
-Tag (string, ex. politics, entertainment)
+// Tag (string, ex. politics, entertainment)

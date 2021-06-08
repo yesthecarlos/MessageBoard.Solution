@@ -1,9 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using System;
+using System.Collections.Generic;
 
 namespace MessageBoard.Models
 {
     public class Message
     {
+        // public Message()
+        // {
+        //     this.Group = new HashSet<Group>();
+        // }
         public int MessageId { get; set; }
         [Required]
         [Display(Name="Author")]
