@@ -75,7 +75,7 @@ namespace MessageBoard.Controllers
         // POST: api/Groups
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Group>> Post(Group group)
+        public async Task<ActionResult<Group>> PostGroup(Group group)
         {
             _db.Groups.Add(group);
             await _db.SaveChangesAsync();

@@ -12,10 +12,10 @@ namespace MessageBoard.Models
         {
             this.Messages = new HashSet<Message>();
         }
+        
         public int UserId { get; set; }
         [Required]
         public string UserName { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
-        public virtual ICollection<Group> Groups {get; set;}
     }
 }

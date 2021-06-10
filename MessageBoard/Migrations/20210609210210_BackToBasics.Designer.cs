@@ -2,41 +2,26 @@
 using MessageBoard.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MessageBoard.Migrations
 {
     [DbContext(typeof(MessageBoardContext))]
-    partial class MessageBoardContextModelSnapshot : ModelSnapshot
+    [Migration("20210609210210_BackToBasics")]
+    partial class BackToBasics
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.0");
 
-            modelBuilder.Entity("MessageBoard.Models.Group", b =>
-                {
-                    b.Property<int>("GroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("GroupName")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.HasKey("GroupId");
-
-                    b.ToTable("Groups");
-                });
-
             modelBuilder.Entity("MessageBoard.Models.Message", b =>
                 {
                     b.Property<int>("MessageId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("MessageDate")
@@ -50,8 +35,6 @@ namespace MessageBoard.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("MessageId");
-
-                    b.HasIndex("GroupId");
 
                     b.HasIndex("UserId");
 
@@ -75,26 +58,11 @@ namespace MessageBoard.Migrations
 
             modelBuilder.Entity("MessageBoard.Models.Message", b =>
                 {
-                    b.HasOne("MessageBoard.Models.Group", "Group")
-                        .WithMany("Messages")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MessageBoard.Models.User", "User")
+                    b.HasOne("MessageBoard.Models.User", null)
                         .WithMany("Messages")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MessageBoard.Models.Group", b =>
-                {
-                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("MessageBoard.Models.User", b =>
